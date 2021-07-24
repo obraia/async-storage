@@ -73,6 +73,11 @@ declare module '@react-native-async-storage/async-storage' {
      * Not supported by all native implementations.
      */
     multiMerge(keyValuePairs: string[][], callback?: (errors?: Error[]) => void): Promise<void>;
+
+    /**
+     * Check current database size in disk.
+     */
+    getStorageSize(): Promise<number>;
   }
 
   export function useAsyncStorage(key: string): {

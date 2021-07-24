@@ -26,11 +26,13 @@ import com.facebook.react.common.ReactConstants;
 import com.facebook.react.common.annotations.VisibleForTesting;
 import com.facebook.react.module.annotations.ReactModule;
 import com.facebook.react.modules.common.ModuleDataCleaner;
+import com.facebook.react.bridge.Promise;
 
 import java.util.ArrayDeque;
 import java.util.HashSet;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import java.io.File;
 
 @ReactModule(name = AsyncStorageModule.NAME)
 public final class AsyncStorageModule
@@ -420,5 +422,19 @@ public final class AsyncStorageModule
    */
   private boolean ensureDatabase() {
     return !mShuttingDown && mReactDatabaseSupplier.ensureDatabase();
+  }
+
+  /**
+   * Check current database size in disk.
+   */
+  @ReactMethod
+  public void getStorageSize(Promise promise) {
+    try {
+      File f = new File(mReactDatabaseSupplier.get().getPath());
+      Double dbSize = (double) f.length();
+      promise.resolve(dbSize.toString());
+    } catch (Exception e) {
+      promise.reject("Error retrieving storage status", e);
+    }
   }
 }
